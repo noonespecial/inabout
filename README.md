@@ -9,3 +9,6 @@ would sleep a given amout of time detatched and in the background and then execu
 I created it for use with OpenWRT boxes that had no cron utilities.
 
 Perfect for setting if to reboot an hour from now even if you lose your connection. 
+
+Put it somewhere in your path. Use like so:
+$# inabout 30 minutes "reboot"
