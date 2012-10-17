@@ -1,0 +1,86 @@
+#!/bin/sh
+###############################################################################
+# Title   : inabout                                                           #
+# Version : 0.1                                                               #
+# Date    : Feb, 1 2012                                                       #
+# Desc.   : Drop to the bacground and execute a given command INABOUT a given #
+#           amount of time: ibabout 10 minutes "reboot"                       #
+# Author  : Jon Beckmann                                                      #
+# Liscense: BSD/Apache                                                        # 
+###############################################################################
+
+#usage
+useage(){
+    printf 'Useage : inabout <time> [hours|minutes|seconds] "command"\n' >&2
+    exit 1
+}
+
+####### Read command line options
+if [ $# -lt 3 ]; then useage; fi
+
+TIME=$1
+shift
+UNIT=$1
+shift
+COMMAND=$1
+shift
+#treat the rest of the line as part of the command to execute
+while [ $# -ge 1 ]; do
+ COMMAND="$COMMAND $1"
+ shift
+done
+
+#sanity check time quantity
+if ! [ `echo $TIME | grep ^[0-9]*$` ] ; then
+#if ! [[ "$TIME" =~ ^[0-9]+$ ]] ; then
+   exec >&2; echo "error: Time must be a number in digits"; exit 1
+fi
+
+UNIT=`echo $UNIT | tr '[:upper:]' '[:lower:]'`
+
+#read units, calculate time
+case $UNIT in
+    sec )
+        DELAY=$TIME
+        UNIT=second
+      ;;
+    secs )
+        DELAY=$TIME
+        UNIT=seconds
+      ;;
+    second )
+        DELAY=$TIME ;;
+    seconds )
+        DELAY=$TIME ;;
+    min )
+        DELAY=$(($TIME * 60))
+        UNIT=minute
+      ;;
+    mins )
+        DELAY=$(($TIME * 60))
+        UNIT=minutes
+      ;;
+    minute )
+        DELAY=$(($TIME * 60)) ;;
+    minutes )
+        DELAY=$(($TIME * 60)) ;;
+    hour )
+        DELAY=$(($TIME * 60 * 60)) ;;
+    hours )
+        DELAY=$(($TIME * 60 * 60)) ;;
+    * )
+        echo "error: I didn't understand your time units" 
+        exit 1
+      ;;
+esac
+
+exec_command() {
+ sleep $1
+ $2
+}
+
+echo Ok, will execute command: \"$COMMAND\" in about $TIME $UNIT
+echo "Dropping into the background now..."
+
+(exec_command $DELAY "$COMMAND" &) 
+
