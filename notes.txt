@@ -1,0 +1,4 @@
+Units
+Seconds : sec, secs, second, seconds 
+Minutes : min, mins, minute, minutes
+Hours   : hour, hours

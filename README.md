@@ -12,3 +12,5 @@ Perfect for setting if to reboot an hour from now even if you lose your connecti
 
 Put it somewhere in your path. Use like so:
 $# inabout 30 minutes "reboot"
+
+
